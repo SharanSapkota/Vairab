@@ -1,7 +1,8 @@
-const express = require("express");
-const router  = express.Router();
+const express = require('express') 
+const Users =  require('./users')
 
-router.get('/', (req, res) => {
-    res.status(200).json({success: true})
-})
-module.exports = router;
+const app = express();
+
+app.use('/user', Users)
+
+module.exports = app;
