@@ -10,17 +10,19 @@ const logFormatting = (filePath, type, res) => {
         input: fs.createReadStream(filePath),
         crlfDelay: Infinity
     });
-    apacheLn.on('line', function(line) {
+    apacheLn.on('line', async function(line) {
         const logData = line.match(LOG_FORMAT_REGEX);
         // console.log(logData)
         const apacheLogs = logObject(logData, type)
         console.log(apacheLogs)
-        ApacheLogs.insertMany([apacheLogs]).then((result, err) => {
+        await ApacheLogs.insertMany([apacheLogs]).then((result, err) => {
             if(result){
                 console.log(result)
-                res.status(200).json({result})
+                return
+                // res.status(200).json({result})
             } else {
-                res.status(400).json({success: false})
+                return
+                // res.status(400).json({success: false})
             }
             })
         
@@ -31,29 +33,86 @@ const logFormatting = (filePath, type, res) => {
 const postApacheLogs = async (req, res) => {
     // console.log('fldjsafla')
     try {
-    // const a = await logFormatting('./apache.log', 'apache', res)
-    const b = await logFormatting('./ngInx.log', 'nginx', res)
+    await logFormatting('./apache.log', 'apache', res).then(data => res.status(200).json({success: true}))
+    } catch(e) {
+        console.error(e)
+    }
 
-        // const apacheLn = readline.createInterface({
-        //     input: fs.createReadStream('./apache.log'),
-        //     crlfDelay: Infinity
-        // });
-        // apacheLn.on('line', function(line) {
-        //     const logData = line.match(LOG_FORMAT_REGEX);
-        //     const apacheLogs = logObject(logData)
-        //     // console.log(apacheLogs)
-        //   });
-} catch (e) {
-    // console.log(e)
 }
-}
-
-const getLogs = async() => {
+const postNgInxLogs = async (req, res) => {
+    // console.log('fldjsafla')
     try {
-        const 
+    await logFormatting('./ngInx.log', 'nginx', res).then(data => res.status(200).json({success: true}))
+    } catch(e) {
+        console.error(e)
+    }
+
+}
+
+const getLogs = async(req, res) => {
+const {page, limit} = req.body;
+    try {
+       await ApacheLogs.find().limit(limit * 1)
+       .skip((page - 1) * limit)
+       .then((result, err) => {
+            if(result) {
+                console.log(result)
+                return res.json({success: true, result})
+            } else {
+                console.log(err)
+                return res.status(500).json({success: false, message: "something went wrong!"})
+            }
+        })
+    } catch(e) {
+        console.log(e)
+        return res.status(500).json({success: false, message: "something went wrong"})
+
     }
 }
 
+const getApacheLogs = async(req, res) => {
+    // const {page, limit} = req.body;
+        try {
+           await ApacheLogs.find({type: 'apache'})
+           .then((result, err) => {
+                if(result) {
+                    console.log(result)
+                    return res.json({success: true, result})
+                } else {
+                    console.log(err)
+                    return res.status(500).json({success: false, message: "something went wrong!"})
+                }
+            })
+        } catch(e) {
+            console.log(e)
+            return res.status(500).json({success: false, message: "something went wrong"})
+    
+        }
+    }
+    const getNgInxLogs = async(req, res) => {
+        // const {page, limit} = req.body;
+            try {
+               await ApacheLogs.find({type: 'ngInx'})
+               .then((result, err) => {
+                    if(result) {
+                        console.log(result)
+                        return res.json({success: true, result})
+                    } else {
+                        console.log(err)
+                        return res.status(500).json({success: false, message: "something went wrong!"})
+                    }
+                })
+            } catch(e) {
+                console.log(e)
+                return res.status(500).json({success: false, message: "something went wrong"})
+        
+            }
+        }
+
 module.exports = {
     postApacheLogs,
+    getLogs,
+    postNgInxLogs,
+    getApacheLogs,
+    getNgInxLogs
 };
