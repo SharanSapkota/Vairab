@@ -8,42 +8,46 @@ const ApacheSchema = mongoose.Schema({
         type: String,
         required: false
     },
-    timestamps: {
+    timestamp: {
         type: String,
         required: false
     },
     methods: {
         type: String,
-        required: true
+        required: false
     },
     path: {
         type: String,
-        required: true
+        required: false
     },
     time: {
         type: String,
-        required: true
+        required: false
     },
     protocol: {
         type: String,
-        required: true
+        required: false
     },
     status: {
         type: String,
-        required: true
+        required: false
     },
     size: {
         type: String,
-        required: true
+        required: false
     },
     referer: {
         type: String,
-        required: true
+        required: false
     },
     userAgent: {
         type: String,
-        required: true
+        required: false
     },
+    type: {
+        type: String,
+        required: false
+    }
 },  { timestamps: true })
 
 module.exports = mongoose.model("apache", ApacheSchema)
