@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const ApacheSchema = mongoose.Schema({
-    id: {
+    ip: {
         type: String,
         required: false
     },
