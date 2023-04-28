@@ -12,26 +12,18 @@ const logFormatting = (filePath, type, res) => {
     });
     apacheLn.on('line', async function(line) {
         const logData = line.match(LOG_FORMAT_REGEX);
-        // console.log(logData)
         const apacheLogs = logObject(logData, type)
-        console.log(apacheLogs)
         await ApacheLogs.insertMany([apacheLogs]).then((result, err) => {
             if(result){
-                console.log(result)
                 return
-                // res.status(200).json({result})
             } else {
                 return
-                // res.status(400).json({success: false})
             }
             })
-        
-        // return apacheLogs
       });
 }
 
 const postApacheLogs = async (req, res) => {
-    // console.log('fldjsafla')
     try {
     await logFormatting('./apache.log', 'apache', res).then(data => res.status(200).json({success: true}))
     } catch(e) {
@@ -40,7 +32,6 @@ const postApacheLogs = async (req, res) => {
 
 }
 const postNgInxLogs = async (req, res) => {
-    // console.log('fldjsafla')
     try {
     await logFormatting('./ngInx.log', 'nginx', res).then(data => res.status(200).json({success: true}))
     } catch(e) {
@@ -56,7 +47,6 @@ const {page, limit} = req.body;
        .skip((page - 1) * limit)
        .then((result, err) => {
             if(result) {
-                console.log(result)
                 return res.json({success: true, result})
             } else {
                 console.log(err)
@@ -71,12 +61,10 @@ const {page, limit} = req.body;
 }
 
 const getApacheLogs = async(req, res) => {
-    // const {page, limit} = req.body;
         try {
            await ApacheLogs.find({type: 'apache'})
            .then((result, err) => {
                 if(result) {
-                    console.log(result)
                     return res.json({success: true, result})
                 } else {
                     console.log(err)
@@ -95,7 +83,6 @@ const getApacheLogs = async(req, res) => {
                await ApacheLogs.find({type: 'ngInx'})
                .then((result, err) => {
                     if(result) {
-                        console.log(result)
                         return res.json({success: true, result})
                     } else {
                         console.log(err)
