@@ -106,11 +106,7 @@ const getApacheLogs = async(req, res) => {
            const mostCommonProtocol = await ApacheLogs.aggregate([PIPELINE_FOR_PROTOCOL])
            combinedResult.push({mostCommonProtocol})
 
-           const totalLogs = ApacheLogs.countDocuments({type: 'apache'});
-           combinedResult.push({totalLogs})
-
-           console.log(combinedResult)
-           return res.status(200).json({data: combinedResult})
+           return res.status(200).json({result: combinedResult})
         } catch(e) {
             console.log(e)
         }
