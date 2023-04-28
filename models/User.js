@@ -12,6 +12,10 @@ const UserSchema = mongoose.Schema({
         type: String,
         required: false
     },
+    role: {
+        type: String,
+        default: 'apache'
+    },
     password: {
         type: String,
         required: true
