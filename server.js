@@ -1,9 +1,9 @@
-const express   = require('express');
-const cors   = require('cors');
+const express = require('express');
+const cors = require('cors');
+const {  parsed } = require('dotenv').config()
 
-
-const app                = express()
-const routes             = require('./routes/index.js')
+const app  = express()
+const routes = require('./routes/index.js')
 const { connectToMongo } = require('./db/index.js');
 
 app.use(express.json())
@@ -16,6 +16,8 @@ app.use('/api', routes)
 
 connectToMongo()
 
-app.listen(7000, () => {
-    console.log("server started at port 7000")
+const PORT = process.env.PORT
+
+app.listen(PORT, () => {
+    console.log(`server started at port ${PORT}`)
 }) 
