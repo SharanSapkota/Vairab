@@ -4,6 +4,7 @@ const readline = require('readline');
 const fs = require('fs');
 const { logObject } = require('../common');
 const ApacheLogs = require('../models/ApacheLogs');
+const {  PIPELINE_FOR_IP, PIPELINE_FOR_PROTOCOL } = require('./utils');
 
 const logFormatting = (filePath, type, res) => {
     const apacheLn = readline.createInterface({
@@ -96,10 +97,30 @@ const getApacheLogs = async(req, res) => {
             }
         }
 
+    const aggregatedLogs = async (req, res) => {
+        try {
+            let combinedResult = [];
+           const mostActiveIp = await ApacheLogs.aggregate([PIPELINE_FOR_IP])
+           combinedResult.push({mostActiveIp})
+
+           const mostCommonProtocol = await ApacheLogs.aggregate([PIPELINE_FOR_PROTOCOL])
+           combinedResult.push({mostCommonProtocol})
+
+           const totalLogs = ApacheLogs.countDocuments({type: 'apache'});
+           combinedResult.push({totalLogs})
+
+           console.log(combinedResult)
+           return res.status(200).json({data: combinedResult})
+        } catch(e) {
+            console.log(e)
+        }
+    }
+
 module.exports = {
     postApacheLogs,
     getLogs,
     postNgInxLogs,
     getApacheLogs,
+    aggregatedLogs,
     getNgInxLogs
 };
