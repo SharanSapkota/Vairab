@@ -28,23 +28,32 @@ const registerUser = async (req, res) => {
 }
 
 const loginUser = async (req, res) => {
-  const { email, password } = req.body;
-  let user = await UserSchema.findOne({email});
-  console.log(user)
-    if(user){
-        bcrypt.compare(password, user.password, function(err, result) {
-            if(result){
-                console.log(result)
-                return res.json({
-                    token: jsonwebtoken.sign({ user }, JWT_SECRET),
-                  });
+    try{
+        const { email, password } = req.body;
+        console.log(email)
+        let user = await UserSchema.findOne({email});
+            if(user){
+                bcrypt.compare(password, user.password, function(err, result) {
+                    if(result){
+                        console.log(result)
+                        return res.json({
+                            token: jsonwebtoken.sign({ user }, JWT_SECRET),
+                        });
+                    } else {
+                        console.log(err)
+                        return res
+                         .status(501)
+                            .json({ message: "Something went wrong" });
+                            }
+            });
+        }
+        else{
+          return res
+            .status(401)
+            .json({ message: "The username and password your provided are invalid" });
             }
-    });
-  }
-else{
-  return res
-    .status(401)
-    .json({ message: "The username and password your provided are invalid" });
+    } catch(e){
+        return res.status(500).json({msg: "something went wrong", success: false})
     }
 }
 
