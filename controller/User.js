@@ -3,7 +3,6 @@ const bcrypt = require('bcrypt');
 const UserSchema = require('../models/User');
 const jsonwebtoken = require("jsonwebtoken");
 
-const JWT_SECRET =  "goK!pusp6ThEdURUtRenOwUhAsWUCLheBazl!uJLPlS8EbreWLdrupIwabRAsiBu";
 
 const registerUser = async (req, res) => {
     const { error } = validateUser(req.body);
@@ -37,7 +36,7 @@ const loginUser = async (req, res) => {
                     if(result){
                         console.log(result)
                         return res.json({
-                            token: jsonwebtoken.sign({ user }, JWT_SECRET),
+                            token: jsonwebtoken.sign({ user }, process.env.JWT_SECRET),
                         });
                     } else {
                         console.log(err)
