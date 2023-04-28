@@ -7,9 +7,9 @@ const router   = express.Router();
 router.post('/apacheLogs',  postApacheLogs);
 router.post('/nginxLogs', postNgInxLogs);
 router.get('/getApacheLogs', auth, getApacheLogs)
-router.get('/getNgInxLogs', getNgInxLogs)
+router.get('/getNgInxLogs', auth, getNgInxLogs)
 
-router.get('/aggregatedLogs', aggregatedLogs )
+router.get('/aggregatedLogs',auth, aggregatedLogs )
 router.get('/getAllLogs',auth, getLogs);
 
 module.exports = router;
